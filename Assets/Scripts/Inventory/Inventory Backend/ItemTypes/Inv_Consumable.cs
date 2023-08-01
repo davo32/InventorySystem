@@ -31,23 +31,5 @@ namespace InventoryBackend
             Debug.Log("[SYSTEM] - This is the Consumable Class for Items");
             text.text = $"{ItemName} has been used";
         }
-
-        //OVERLOADS - EQUAL : NOT EQUAL
-        public static bool operator ==(Inv_Consumable item1, Inv_Consumable item2)
-        {
-            return (item1.itemSprite == item2.itemSprite)
-                && (item1.ItemName == item2.ItemName)
-                && (item1.Quantity == item2.Quantity)
-                && (item1.quality == item2.quality)
-                && (item1.Amount == item2.Amount);
-        }
-        public static bool operator !=(Inv_Consumable item1, Inv_Consumable item2)
-        {
-            return (item1.itemSprite != item2.itemSprite)
-                && (item1.ItemName != item2.ItemName)
-                && (item1.Quantity != item2.Quantity)
-                && (item1.quality != item2.quality)
-                && (item1.Amount == item2.Amount);
-        }
     }
 }
