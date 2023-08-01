@@ -1,2 +1,3 @@
 # InventorySystem
-My Take on a Inventory System
+Use the backend Scripts and create your own frontend Scripts
+-Nova
