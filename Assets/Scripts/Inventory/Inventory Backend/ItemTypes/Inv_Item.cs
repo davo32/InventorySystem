@@ -1,5 +1,4 @@
 using TMPro;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 namespace InventoryBackend
 {
@@ -18,15 +17,17 @@ namespace InventoryBackend
         public Sprite itemSprite;
         public string ItemName;
         public int Quantity;
+        public bool isStackable;
         public Quality quality;
 
         public Inv_Item() { }
         //Constructor - Default
-        public Inv_Item(Sprite s, string name, int quantity, Quality q)
+        public Inv_Item(Sprite s, string name, int quantity,bool stackable, Quality q)
         {
             itemSprite = s;
             ItemName = name;
             Quantity = quantity;
+            isStackable = stackable;
             quality = q;
         }
 
@@ -36,6 +37,7 @@ namespace InventoryBackend
             itemSprite = copyData.itemSprite;
             ItemName = copyData.ItemName;
             Quantity = copyData.Quantity;
+            isStackable = copyData.isStackable;
             quality = copyData.quality;
         }
 

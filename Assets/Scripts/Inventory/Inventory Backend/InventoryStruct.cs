@@ -4,33 +4,35 @@ namespace InventoryBackend
 {
     public struct InventoryStruct
     {
-        private List<Inv_Item> InventoryItems;
-        private int maxInventorySize;
-        private int stackLimit;
+        private List<Inv_Item> _inventoryItems;
+        private int _maxInventorySize;
+        private int _stackLimit;
 
 
         public InventoryStruct(int newInvSize, int newStackLimit)
         {
-            maxInventorySize = newInvSize;
-            stackLimit = newStackLimit;
-            InventoryItems = new List<Inv_Item>();
+            _maxInventorySize = newInvSize;
+            _stackLimit = newStackLimit;
+            _inventoryItems = new List<Inv_Item>();
         }
 
         public int GetMaxSize()
         {
-            return maxInventorySize;
+            return _maxInventorySize;
         }
-        public bool CheckInventoryLimit()
+
+        private bool CheckInventoryLimit()
         {
             Debug.Log($"*******************************************************************");
-            Debug.Log($"[SYSTEM] - InventoryLimit is:  ({maxInventorySize})");
-            Debug.Log($"[SYSTEM] - Current InventorySize is:  ({InventoryItems.Count + 1})");
+            Debug.Log($"[SYSTEM] - InventoryLimit is:  ({_maxInventorySize})");
+            Debug.Log($"[SYSTEM] - Current InventorySize is:  ({_inventoryItems.Count + 1})");
             Debug.Log($"*******************************************************************");
-            return (InventoryItems.Count < maxInventorySize);
+            return (_inventoryItems.Count < _maxInventorySize);
         }
-        public bool CheckItem(Inv_Item itemData)
+
+        private bool CheckItem(Inv_Item itemData)
         {
-            if (InventoryItems.Contains(itemData))
+            if (_inventoryItems.Contains(itemData))
             {
                 Debug.Log($"[SYSTEM] - Inventory Contains ({itemData.ItemName})");
                 return true;
@@ -41,35 +43,45 @@ namespace InventoryBackend
 
         public List<Inv_Item> GetInventory()
         {
-            return InventoryItems;
+            return _inventoryItems;
         }
 
-        public void TakeAllItems(InventoryStruct Inv_addTo)
+        public void RemoveAll()
         {
-            foreach (Inv_Item item in GetInventory())
+            for (int i = 0; i < _inventoryItems.Count; i++)
             {
-                Inv_addTo.AddItem(item);
+                _inventoryItems.RemoveAt(i);
             }
+        }
+
+        public void TakeAllItems(InventoryStruct invAddTo, InventoryStruct invRemoveFrom)
+        {
+            int itemAmount = invRemoveFrom.GetInventory().Count;
+            for (int i = 0; i < itemAmount;i++)
+            {
+                invAddTo.AddItem(invRemoveFrom.GetInventory()[i]);
+            }
+            RemoveAll();
         }
         public void SetInventoryLimit(int newInvLimit)
         {
-            maxInventorySize = newInvLimit;
-            Debug.Log($"[SYSTEM] - Inventory Limit ({maxInventorySize})");
+            _maxInventorySize = newInvLimit;
+            Debug.Log($"[SYSTEM] - Inventory Limit ({_maxInventorySize})");
         }
         public void SetStackLimit(int newStackLimit)
         {
-            stackLimit = newStackLimit;
-            Debug.Log($"[SYSTEM] - Stack Limit ({stackLimit})");
+            _stackLimit = newStackLimit;
+            Debug.Log($"[SYSTEM] - Stack Limit ({_stackLimit})");
         }
         public void JoinStack(Inv_Item itemData)
         {
-            if (CheckItem(itemData) && itemData.Quantity < stackLimit)
+            if (CheckItem(itemData) && itemData.Quantity < _stackLimit)
             {
-                Inv_Item item = InventoryItems.Find(x => x == itemData);
+                Inv_Item item = _inventoryItems.Find(x => x == itemData);
                 int combinedQuantity = item.Quantity + itemData.Quantity;
-                if (item.Quantity < stackLimit && combinedQuantity < stackLimit)
+                if (item.Quantity < _stackLimit && combinedQuantity < _stackLimit)
                 {
-                    InventoryItems.Remove(item);
+                    _inventoryItems.Remove(item);
                     itemData.Quantity = combinedQuantity;
                     Debug.Log("[SYSTEM] - Stack Joined (SUCCESS)");
                 }
@@ -91,7 +103,7 @@ namespace InventoryBackend
                 {
                     itemData.Quantity /= 2;
                     Inv_Item newStack = new Inv_Item(itemData);
-                    InventoryItems.Add(newStack);
+                    _inventoryItems.Add(newStack);
                     Debug.Log($"[SYSTEM] - Item Split (SUCCESS)");
                 }
             }
@@ -104,14 +116,14 @@ namespace InventoryBackend
             }
             else
             {
-                if (CheckItem(itemData))
+                if (CheckItem(itemData) && itemData.isStackable)
                 {
-                    Inv_Item item = InventoryItems.Find(x => x == itemData);
+                    Inv_Item item = _inventoryItems.Find(x => x == itemData);
                     item.Quantity++;
                 }
                 else
                 {
-                    InventoryItems.Add(itemData);
+                    _inventoryItems.Add(itemData);
                 }
                 Debug.Log($"[SYSTEM] - Item Added ({itemData.ItemName})");
             }
@@ -124,14 +136,14 @@ namespace InventoryBackend
             }
             else
             {
-                Inv_Item item = InventoryItems.Find(x => x == itemData);
+                Inv_Item item = _inventoryItems.Find(x => x == itemData);
                 if (item.Quantity > 1)
                 {
                     item.Quantity--;
                 }
                 else 
                 {
-                    InventoryItems.Remove(itemData);
+                    _inventoryItems.Remove(itemData);
                 }
                 Debug.Log($"[SYSTEM] - Item Removed (SUCCESS)");
             }

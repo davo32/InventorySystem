@@ -9,12 +9,13 @@ public class Inv_Shield : Inv_Item
     public int Defense;
     public Inv_Shield() { }
 
-    public Inv_Shield(Sprite s, string name, int defense, int quantity, Quality q)
+    public Inv_Shield(Sprite s, string name, int defense, int quantity,bool stackable, Quality q)
     { 
         itemSprite = s;
         ItemName = name;
         Defense = defense;
         Quantity = quantity;
+        isStackable = stackable;
         quality = q;
     }
 
@@ -24,6 +25,7 @@ public class Inv_Shield : Inv_Item
         ItemName = copyData.ItemName;
         Defense = copyData.Defense;
         Quantity = copyData.Quantity;
+        isStackable = copyData.isStackable;
         quality = copyData.quality;
     }
 

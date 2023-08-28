@@ -8,12 +8,13 @@ namespace InventoryBackend
        public int Damage;
 
        public Inv_Weapon() { }
-        public Inv_Weapon(Sprite s, string name, int damage, int quantity, Quality q)
+        public Inv_Weapon(Sprite s, string name, int damage, int quantity,bool stackable, Quality q)
         {
             itemSprite = s;
             ItemName = name;
             Damage = damage;
             Quantity = quantity;
+            isStackable = stackable;
             quality = q;
         }
         public Inv_Weapon(Inv_Weapon copyData)
@@ -22,6 +23,7 @@ namespace InventoryBackend
             ItemName = copyData.ItemName;
             Damage = copyData.Damage;
             Quantity = copyData.Quantity;
+            isStackable = copyData.isStackable;
             quality = copyData.quality;
         }
 

@@ -1,31 +1,30 @@
 using InventoryBackend;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 public class Inv_Slot : MonoBehaviour
 {
     public Inv_Item item = null;
-    private Sprite defaultImage;
+    private Sprite _defaultImage;
     [SerializeField] private Image slotImage;
     [SerializeField] private TextMeshProUGUI stackCountSlot;
+    [SerializeField] private GameObject quantPanel;
 
-    [SerializeField] private GameObject QuantPanel;
+    private GameObject ItemInfo;
 
     private CanvasGroup ActionMenuUI;
-    private ActionMenu ActionScript;
 
-    private bool isShown = false;
-    private bool hasItem;
+    public bool isShown = false;
 
     private void Awake()
     {
-        defaultImage = slotImage.sprite;
+        _defaultImage = slotImage.sprite;
+        ItemInfo = GameObject.FindGameObjectWithTag("ItemInfo");
     }
     private void Start()
     {
-
         ActionMenuUI = GameObject.FindGameObjectWithTag("ActionMenu").GetComponent<CanvasGroup>();
-        ActionScript = ActionMenuUI.gameObject.GetComponent<ActionMenu>();
 
         GetComponent<Button>().onClick.AddListener(ActionMenu);
     }
@@ -36,17 +35,14 @@ public class Inv_Slot : MonoBehaviour
         {
             if (isShown)
             {
-                ActionMenuUI.alpha = 1.0f;
-                ActionMenuUI.interactable = true;
-                ActionMenuUI.blocksRaycasts = true;
-                ActionScript.SetActiveSlot(this);
+                ActionMenuUI.GetComponent<global::ActionMenu>().SetActiveSlot(this);
+                ActionMenuUI.gameObject.transform.position = transform.position;
+                ShowUI(ActionMenuUI);
             }
             else
             {
-                ActionMenuUI.alpha = 0.0f;
-                ActionMenuUI.interactable = false;
-                ActionMenuUI.blocksRaycasts = false;
-                ActionScript.SetActiveSlot(null);
+                ActionMenuUI.GetComponent<global::ActionMenu>().SetActiveSlot(null);
+                HideUI(ActionMenuUI);
             }
         }
     }
@@ -57,16 +53,20 @@ public class Inv_Slot : MonoBehaviour
     public void SetupSlot(Inv_Item newItem = null)
     {
         item = newItem;
-        slotImage.sprite = newItem?.itemSprite;
+        if (item != null)
+        {
+            slotImage.sprite = newItem?.itemSprite;
+        }
+        else
+        {
+            slotImage.sprite = _defaultImage;
+        }
+
         stackCountSlot.text = newItem?.Quantity.ToString();
-
-        //if (newItem == null) hasItem = false;
-        //else hasItem = true;
     }
-
     public void ResetSlot()
     {
-        slotImage.sprite = defaultImage;
+        slotImage.sprite = _defaultImage;
     }
     public void SetItem(Inv_Item newItem)
     {
@@ -76,8 +76,44 @@ public class Inv_Slot : MonoBehaviour
     {
         return item;
     }
+
+    public void MouseOver()
+    {
+        if (item != null)
+        {
+           ShowUI(ItemInfo.GetComponent<CanvasGroup>());
+           ItemInfo.GetComponent<ItemInfoScript>().Setup(item);
+        }
+    }
+    public void MouseExit()
+    {
+        if (item != null)
+        {
+            HideUI(ItemInfo.GetComponent<CanvasGroup>());
+        }
+    }
+
     private void Update()
     {
-        QuantPanel.SetActive(item?.Quantity > 1);
+        quantPanel.SetActive(item?.Quantity > 1);
+        RefreshStack();
+        if(item?.Quantity < 1)
+            SetupSlot();
+            //Destroy(gameObject);
+        
+    }
+
+    void ShowUI(CanvasGroup cg)
+    { 
+        cg.alpha = 1.0f;
+        cg.interactable = true;
+        cg.blocksRaycasts = true;
+    }
+
+    void HideUI(CanvasGroup cg)
+    {
+        cg.alpha = 0.0f;
+        cg.interactable = false;
+        cg.blocksRaycasts = false;
     }
 }

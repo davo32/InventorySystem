@@ -6,11 +6,12 @@ namespace InventoryBackend
     public class Inv_QuestItem : Inv_Item
     {
         public Inv_QuestItem() { }
-        public Inv_QuestItem(Sprite s, string name, int quantity, Quality q)
+        public Inv_QuestItem(Sprite s, string name, int quantity,bool stackable, Quality q)
         {
             itemSprite = s;
             ItemName = name;
             Quantity = quantity;
+            isStackable = stackable;
             quality = q;
         }
 
@@ -19,6 +20,7 @@ namespace InventoryBackend
             itemSprite = copyData.itemSprite;
             ItemName = copyData.ItemName;
             Quantity = copyData.Quantity;
+            isStackable = copyData.isStackable;
             quality = copyData.quality;
         }
 

@@ -33,16 +33,16 @@ public class ActionMenu : MonoBehaviour
     public void Use()
     {
         activeSlot.item.Use(Text);
+        activeSlot.isShown = false;
+        ActionMenuUI.alpha = 0.0f;
+        ActionMenuUI.interactable = false;
+        ActionMenuUI.blocksRaycasts = false;
+        ActionScript.SetActiveSlot(null);
     }
-
-    public void Examine()
-    {
-        
-    }
-
     public void Drop()
     {
         Debug.Log($"[SYSTEM] - {activeSlot.item?.ItemName} has been dropped!");
+        Text.text = $"{activeSlot.item?.ItemName} has been dropped!";
         inventory.RemoveItem(activeSlot.item);
         activeSlot.SetupSlot();
 
@@ -51,7 +51,14 @@ public class ActionMenu : MonoBehaviour
         ActionMenuUI.blocksRaycasts = false;
         activeSlot.ResetSlot();
         ActionScript.SetActiveSlot(null);
+    }
 
-
+    public void Cancel()
+    {
+        activeSlot.isShown = false;
+        ActionMenuUI.alpha = 0.0f;
+        ActionMenuUI.interactable = false;
+        ActionMenuUI.blocksRaycasts = false;
+        ActionScript.SetActiveSlot(null);
     }
 }
